@@ -1,5 +1,5 @@
 import random
-
+import tkinter as tk
 class State:
     def __init__(self, state = None, x_index = None):
         if state is None and x_index is None:
@@ -57,14 +57,68 @@ class State:
         new_state = [new_flat_state[i:i+3] for i in range(0, 9, 3)]
         return State(new_state, new_x_index)
             
+class PuzzleGUI:
+    def __init__(self, master):
+        self.master = master
+        self.master.title("Puzzle Game")
+
+        self.state = State()
+        self.create_widgets()
+        self.update_display()
+
+    def create_widgets(self):
+        self.buttons = [[None for _ in range(3)] for _ in range(3)]
+        for r in range(3):
+            for c in range(3):
+                btn = tk.Button(self.master, text="", width=10, height=4, command=lambda r=r, c=c: self.on_click(r, c))
+                btn.grid(row=r, column=c)
+                self.buttons[r][c] = btn
+
+        self.up_button = tk.Button(self.master, text="Up", command=self.move_up)
+        self.down_button = tk.Button(self.master, text="Down", command=self.move_down)
+        self.left_button = tk.Button(self.master, text="Left", command=self.move_left)
+        self.right_button = tk.Button(self.master, text="Right", command=self.move_right)
+
+        self.up_button.grid(row=3, column=1)
+        self.down_button.grid(row=4, column=1)
+        self.left_button.grid(row=3, column=0)
+        self.right_button.grid(row=3, column=2)
+
+    def update_display(self):
+        for r in range(3):
+            for c in range(3):
+                value = self.state.state[r][c]
+                self.buttons[r][c].config(text=value if value != 'X' else "", bg="lightblue" if value == 'X' else "white")
+
+    def on_click(self, row, col):
+        # Dummy function for cell click, as we are using buttons for movement
+        pass
+
+    def move_up(self):
+        new_state = self.state.move('up')
+        if new_state:
+            self.state = new_state
+            self.update_display()
+
+    def move_down(self):
+        new_state = self.state.move('down')
+        if new_state:
+            self.state = new_state
+            self.update_display()
+
+    def move_left(self):
+        new_state = self.state.move('left')
+        if new_state:
+            self.state = new_state
+            self.update_display()
+
+    def move_right(self):
+        new_state = self.state.move('right')
+        if new_state:
+            self.state = new_state
+            self.update_display()
+
 if __name__ == "__main__":
-    state_q1 = State()
-    state_q1.display_state()
-    print(state_q1.evaluate())
-    state_q2 = state_q1.move('right')
-    state_q2.display_state()
-    state_q3 = state_q2.move('up')
-    state_q3.display_state()
-    state_q1.display_state()
-    state_q2.display_state()
-    state_q3.display_state()
+    root = tk.Tk()
+    app = PuzzleGUI(root)
+    root.mainloop()
