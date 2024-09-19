@@ -5,10 +5,11 @@ from tkinter import messagebox
 class State:
     def __init__(self, state=None, x_index=None):
         if state is None and x_index is None:
-            self.state, self.x_index = self.create_state()
+            self.state, self.x_index, self.g, self.f, self.h = self.create_state()
         else:                                                         
             self.state = state
             self.x_index = x_index
+            self.g = self.f = self.h = 0
 
     def evaluate(self) -> bool:
         final_state = [[1, 2, 3], [4, 5, 6], [7, 8, "X"]]
@@ -167,13 +168,60 @@ class PuzzleGUI:
                 widget.destroy()
         self.restart_game()
 
-class IA:
-    def busca_largura(State):
+class Search:
+    def length_search(state: State):
     
-    def busca_profundidade(State):
+    def depth_search(state: State):
 
-    def A_star(State):
+    def a_star(state: State):
+        struct = []
+        closed_struct = []
+        struct.append(state)
+
+        while len(struct) > 0
+            current_state = struct[0]
+            current_indes = 0
+
+            for index, item in enumerate(struct):
+                if item.f < current_state.f:
+                    current_state = item
+                    current_index = index
+
+            struct.pop(current_index)
+            closed_struct.append(current_node)
+
+            if current_state.evaluate:
+                return current_state
+            
+            children = []
+            for direction in ["up", "down", "left", "right"]:
+                new_state = current_state.move(direction)
+
+                if current_state.x_index != new_state.x_index:
+                    children.append(new_state)
+                
+            for child in children:
+
+                for closed_child in closed_list:
+                    if child == closed_child:
+                        continue
+
+                heuristic(child)
+
+                for open_node in open_list:
+                if child == open_node and child.g > open_node.g:
+                    continue
+
         
+                open_list.append(child)
+
+    def heuristic(state: State, current_state: State):
+        state.g = current_state.g + 1
+        final_state = [[1, 2, 3], [4, 5, 6], [7, 8, "X"]]
+        flat_state = [item for sublist in self.state for item in sublist]
+        for 
+        state.f = state.g + state.h
+
 if __name__ == "__main__":
     root = tk.Tk()
     app = PuzzleGUI(root)
