@@ -167,6 +167,13 @@ class PuzzleGUI:
                 widget.destroy()
         self.restart_game()
 
+class IA:
+    def busca_largura(State):
+    
+    def busca_profundidade(State):
+
+    def A_star(State):
+        
 if __name__ == "__main__":
     root = tk.Tk()
     app = PuzzleGUI(root)
