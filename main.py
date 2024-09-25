@@ -1,6 +1,6 @@
 import random
 import tkinter as tk
-from tkinter import messagebox
+from tkinter import messagebox, StringVar, OptionMenu
 from collections import deque
 
 class State:
@@ -36,7 +36,11 @@ class State:
                 if flat_state[i] > flat_state[j]:
                     inversions += 1
         return inversions % 2 == 0
-
+    
+    def display_state(self):
+        for row in self.state:
+            print(row)
+    
     def move(self, direction: str):
         flat_state = [item for sublist in self.state for item in sublist]
         new_x_index = self.x_index
@@ -80,6 +84,31 @@ class State:
 
         return None, visited_count  # Retorna a contagem mesmo se não encontrar solução
     
+    def dfs(initial_state: "State", max_depth=50):
+        stack = [(initial_state, 0)]  # Pilha com (estado, profundidade)
+        visited = set()
+        visited.add(tuple([item for sublist in initial_state.state for item in sublist]))
+        
+        visited_count = 0  # Contador de estados visitados
+
+        while stack:
+            current_state, depth = stack.pop()
+            visited_count += 1  # Incrementar a cada estado retirado da pilha
+
+            if current_state.evaluate():
+                return current_state.moves, visited_count  # Retorna a sequência de movimentos e a contagem de estados visitados
+
+            if depth < max_depth:  # Limite de profundidade
+                for direction in ['up', 'down', 'left', 'right']:
+                    new_state = current_state.move(direction)
+                    if new_state:
+                        flat_state = tuple([item for sublist in new_state.state for item in sublist])
+                        if flat_state not in visited:
+                            visited.add(flat_state)
+                            stack.append((new_state, depth + 1))
+
+        return None, visited_count  # Retorna a contagem mesmo se não encontrar solução
+      
     def a_star(start):
         """Busca A*"""
         #start.display_state()
@@ -95,9 +124,6 @@ class State:
             visited_count +=1
             # Verifica se o estado atual é o objetivo
             if cur.evaluate():
-                print("Objetivo alcançado!")
-                print(f"Nível: {cur.level}, f: {cur.f}")
-                #self.reconstruct_path(cur)  # Chama o método para reconstruir o caminho
                 return cur.moves, visited_count
 
             closed_list.append(cur)
@@ -143,6 +169,7 @@ class PuzzleGUI:
         self.master = master
         self.master.title("Puzzle Game")
         self.state = State()  # Estado inicial embaralhado
+        self.initial_state = self.state
         self.create_widgets()
         self.update_display()
         self.bind_keys()
@@ -159,14 +186,17 @@ class PuzzleGUI:
         self.down_button = tk.Button(self.master, text="Baixo", command=self.move_down)
         self.left_button = tk.Button(self.master, text="Esquerda", command=self.move_left)
         self.right_button = tk.Button(self.master, text="Direita", command=self.move_right)
-        self.solve_button = tk.Button(self.master, text="Resolver", command=self.solve_puzzle)
+        self.solve_var = StringVar(value="Escolha o método")  # Variável para o dropdown
+        self.solve_dropdown = OptionMenu(self.master, self.solve_var, "BFS", "DFS", "A*", command=self.solve_puzzle)
+        #self.solve_dropdown.config(bg="#2196F3", fg="white", borderwidth=2, relief="solid")
+        self.solve_dropdown.grid(row=5, column=1)
         self.restart_button = tk.Button(self.master, text="Reiniciar", command=self.restart_game)
 
         self.up_button.grid(row=3, column=1)
         self.down_button.grid(row=4, column=1)
         self.left_button.grid(row=3, column=0)
         self.right_button.grid(row=3, column=2)
-        self.solve_button.grid(row=5, column=1)
+        #self.solve_var.grid(row=5, column=1)
         self.restart_button.grid(row=6, column=1)
 
     def update_display(self):
@@ -227,16 +257,23 @@ class PuzzleGUI:
 
     def show_win_message(self):
         messagebox.showinfo("Parabéns!", "Você venceu!")
-        self.restart_game()
+        #self.restart_game()
 
-    def restart_game(self):
-        self.state = State()
+    def restart_game(self, state=None):
+        if state is not None:
+            self.state = state
+        else:
+            self.state = State()
         self.update_display()
 
-    def solve_puzzle(self):
-
+    def solve_puzzle(self, method):
         current_state = State(self.state.state, self.state.x_index)
-        solution, visited_count = State.a_star(current_state)  # Recebe também a contagem de estados visitados
+        if method == "BFS":
+            solution, visited_count = State.bfs(current_state)
+        elif method == "DFS":
+            solution, visited_count = State.dfs(current_state)
+        elif method == "A*":
+            solution, visited_count = State.a_star(current_state)
 
         if solution:
             win_message = tk.Toplevel(self.master)
@@ -254,13 +291,14 @@ class PuzzleGUI:
 
             # Botão para iniciar a solução automática
             auto_solve_button = tk.Button(win_message, text="Resolver automaticamente", 
-                                        command=lambda: [self.close_and_auto_solve(win_message, solution, speed_slider.get())])
+                                           command=lambda: [self.close_and_auto_solve(win_message, solution, speed_slider.get())])
             auto_solve_button.pack(pady=10)
 
             close_button = tk.Button(win_message, text="Fechar", command=win_message.destroy)
             close_button.pack(pady=10)
         else:
             messagebox.showinfo("Solução", f"Nenhuma solução foi encontrada.\nEstados visitados: {visited_count}")
+
 
     # Função que fecha a janela e começa a resolução automática
     def close_and_auto_solve(self, win_message, solution, speed):
@@ -285,6 +323,7 @@ class PuzzleGUI:
             else:
                 # Exibe a mensagem após a solução completa
                 messagebox.showinfo("Solução Completa", "O quebra-cabeça foi resolvido automaticamente!")
+                self.restart_game(self.initial_state)
 
         # Inicia o processo de resolução automática
         perform_moves()
