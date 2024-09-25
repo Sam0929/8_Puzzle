@@ -1,6 +1,6 @@
 # Puzzle Game
 
-Este é um jogo de quebra-cabeça implementado em Python usando a biblioteca `Tkinter` para a interface gráfica e três algoritmos de resolução clássicos: **BFS (Busca em Largura)**, **DFS (Busca em Profundidade)** e **A* (A-estrela)**. O objetivo é reorganizar as peças do tabuleiro até atingir o estado final correto.
+Este é um jogo de quebra-cabeça implementado em Python usando a biblioteca `Tkinter` para a interface gráfica e três algoritmos de resolução clássicos: **BFS (Busca em Largura)**, **DFS (Busca em Profundidade)** e **A\* (A-estrela)**. O objetivo é reorganizar as peças do tabuleiro até atingir o estado final correto.
 
 ## Funcionalidades
 
