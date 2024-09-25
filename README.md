@@ -18,7 +18,7 @@ Para rodar este projeto localmente, siga os passos abaixo:
 1. Clone o repositório para sua máquina local:
 
     ```bash
-    git clone https://github.com/seu-usuario/puzzle-game.git
+    git clone https://github.com/Sam0929/8_Puzzle.git
     ```
 
 2. Certifique-se de ter o Python instalado. Caso não tenha, faça o download [aqui](https://www.python.org/downloads/).
@@ -32,7 +32,7 @@ Para rodar este projeto localmente, siga os passos abaixo:
 4. Navegue até o diretório do projeto e execute o arquivo principal:
 
     ```bash
-    cd puzzle-game
+    cd 8_Puzzle
     python main.py
     ```
 
