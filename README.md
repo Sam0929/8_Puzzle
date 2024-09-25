@@ -60,11 +60,9 @@ Para o algoritmo A*, escolhemos a heurística da **Distância de Manhattan**. Es
 
 ### Como Funciona a Distância de Manhattan
 
-A Distância de Manhattan entre dois pontos \((x_1, y_1)\) e \((x_2, y_2)\) em um espaço bidimensional é dada pela fórmula:
+A Distância de Manhattan entre dois pontos $\((x_1, y_1)\)$ e $\((x_2, y_2)\)$ em um espaço bidimensional é dada pela fórmula:
 
-\[
-\text{Distância de Manhattan} = |x_1 - x_2| + |y_1 - y_2|
-\]
+$\text{Distância de Manhattan} = |x_1 - x_2| + |y_1 - y_2|$
 
 No contexto do nosso jogo, isso significa que, para cada peça do quebra-cabeça, calculamos a distância até a posição que ela deve ocupar. A soma dessas distâncias para todas as peças fornece uma estimativa da "distância" total que ainda precisamos percorrer para resolver o quebra-cabeça. Essa estimativa ajuda o algoritmo A* a priorizar movimentos que se aproximam mais rapidamente da solução final, tornando a busca mais eficiente.
 
@@ -87,16 +85,6 @@ A implementação deve utilizar estruturas de dados e ser iterativa, ou seja, se
 3. **Retornar "Sem solução"** se não houver um estado final encontrado após a avaliação de todos os estados possíveis.
 
 Esse requisito garante que o algoritmo de busca opere de maneira eficiente e controlada, evitando o consumo excessivo de memória que pode ocorrer com a recursão. Além disso, promove uma melhor compreensão do fluxo de execução e da lógica de busca, permitindo um gerenciamento mais claro dos estados explorados no quebra-cabeça.
-
-## Capturas de Tela
-
-- **Tela Inicial**:
-  
-  ![Tela Inicial do Puzzle Game](assets/tela_inicial.png)
-
-- **Resolução Automática**:
-
-  ![Tela de Resolução Automática](assets/resolucao_automatica.png)
 
 ## Contribuindo
 
