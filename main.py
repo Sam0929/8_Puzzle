@@ -4,12 +4,15 @@ from tkinter import messagebox
 from collections import deque
 
 class State:
-    def __init__(self, state=None, x_index=None, moves=None):
+    def __init__(self, state=None, x_index=None, moves=None, level=0):
         if state is None and x_index is None:
             self.state, self.x_index = self.create_state()
+            self.level = level
         else:
             self.state = state
             self.x_index = x_index
+            self.level = level
+        self.f = 0
         self.moves = moves if moves is not None else []
 
     def evaluate(self) -> bool:
@@ -76,7 +79,64 @@ class State:
                         queue.append(new_state)
 
         return None, visited_count  # Retorna a contagem mesmo se não encontrar solução
+    
+    def a_star(start):
+        """Busca A*"""
+        #start.display_state()
+        start.f = State.heuristic(start)
+        open_list = []
+        closed_list = []
+        open_list.append(start)
+        visited_count = 0
+        print("\n\n")
 
+        while open_list:
+            cur = open_list.pop(0)
+            visited_count +=1
+            # Verifica se o estado atual é o objetivo
+            if cur.evaluate():
+                print("Objetivo alcançado!")
+                print(f"Nível: {cur.level}, f: {cur.f}")
+                #self.reconstruct_path(cur)  # Chama o método para reconstruir o caminho
+                return cur.moves, visited_count
+
+            closed_list.append(cur)
+
+            # Gera os filhos do estado atual
+            children = []
+            for direction in ["up", "down", "left", "right"]:
+                new_state = cur.move(direction)
+                if new_state is not None:
+                    children.append(new_state)
+
+            for child in children:
+                child.f = State.heuristic(child)
+
+                if any(closed_child.state == child.state for closed_child in closed_list):
+                    continue
+
+                if any(open_node.state == child.state and child.f >= open_node.f for open_node in open_list):
+                    continue
+
+                open_list.append(child)
+            open_list.sort(key=lambda x: x.f)
+
+    def heuristic(state):
+        """Calcula a heurística usando a distância de Manhattan."""
+        goal = {1: (0, 0), 2: (0, 1), 3: (0, 2),
+                4: (1, 0), 5: (1, 1), 6: (1, 2),
+                7: (2, 0), 8: (2, 1), "X": (2, 2)}
+        
+        h = 0
+
+        for i in range(3):
+            for j in range(3):
+                value = state.state[i][j]
+                if value != 'X':  # Ignora a posição vazia ('X')
+                    goal_position = goal[value]
+                    h += abs(i - goal_position[0]) + abs(j - goal_position[1])
+
+        return h + state.level
 
 class PuzzleGUI:
     def __init__(self, master):
@@ -176,7 +236,7 @@ class PuzzleGUI:
     def solve_puzzle(self):
 
         current_state = State(self.state.state, self.state.x_index)
-        solution, visited_count = State.bfs(current_state)  # Recebe também a contagem de estados visitados
+        solution, visited_count = State.a_star(current_state)  # Recebe também a contagem de estados visitados
 
         if solution:
             win_message = tk.Toplevel(self.master)
