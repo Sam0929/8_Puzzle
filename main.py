@@ -332,8 +332,8 @@ class PuzzleGUI:
         scroll_bar.config(command=solution_text.yview)
 
         formatted_solution = ' -> '.join(solution)
-        solution_text.insert(tk.END, f"Solução: {formatted_solution}\n")
-        solution_text.insert(tk.END, f"Encontrada com {len(solution)} movimentos.\n")
+        solution_text.insert(tk.END, f"Solução: {formatted_solution}\n\n")
+        solution_text.insert(tk.END, f"Encontrada com {len(solution)} movimentos.\n\n")
         solution_text.insert(tk.END, f"Estados visitados: {visited_count}")
 
         speed_label = tk.Label(win_message, text="Velocidade de resolução (ms por movimento):")
