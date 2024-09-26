@@ -316,22 +316,35 @@ class PuzzleGUI:
             messagebox.showinfo("Solução", f"Nenhuma solução foi encontrada.\nEstados visitados: {visited_count}")
 
     def show_solution_window(self, solution, visited_count):
-        """Exibe a janela de solução encontrada."""
+        
         win_message = tk.Toplevel(self.master)
         win_message.title("Solução encontrada!")
 
-        message_label = tk.Label(win_message, text=f"Solução: {solution}\n Encontrada com {len(solution)} movimentos.\nEstados visitados: {visited_count}", padx=20, pady=20)
-        message_label.pack()
+        text_frame = tk.Frame(win_message)
+        text_frame.pack(padx=20, pady=20)
+
+        scroll_bar = tk.Scrollbar(text_frame)
+        scroll_bar.pack(side=tk.RIGHT, fill=tk.Y)
+
+        solution_text = tk.Text(text_frame, wrap="word", yscrollcommand=scroll_bar.set, height=10, width=40)
+        solution_text.pack(side=tk.LEFT)
+
+        scroll_bar.config(command=solution_text.yview)
+
+        formatted_solution = ' -> '.join(solution)
+        solution_text.insert(tk.END, f"Solução: {formatted_solution}\n")
+        solution_text.insert(tk.END, f"Encontrada com {len(solution)} movimentos.\n")
+        solution_text.insert(tk.END, f"Estados visitados: {visited_count}")
 
         speed_label = tk.Label(win_message, text="Velocidade de resolução (ms por movimento):")
         speed_label.pack(pady=5)
 
-        speed_slider = tk.Scale(win_message, from_=100, to=2000, orient='horizontal')
+        speed_slider = tk.Scale(win_message, from_=10, to=500, orient='horizontal')
         speed_slider.set(500)  # Velocidade padrão (500 ms)
         speed_slider.pack(pady=5)
 
         auto_solve_button = tk.Button(win_message, text="Resolver automaticamente", 
-                                       command=lambda: [self.close_and_auto_solve(win_message, solution, speed_slider.get())])
+                                    command=lambda: [self.close_and_auto_solve(win_message, solution, speed_slider.get())])
         auto_solve_button.pack(pady=10)
 
         close_button = tk.Button(win_message, text="Fechar", command=win_message.destroy)
